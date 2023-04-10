@@ -3,14 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/route_manager.dart';
 import 'package:lottie/lottie.dart';
 import 'package:myapp/a_Sayfalar/home.dart';
+import 'package:myapp/a_Sayfalar/landing.dart';
 import 'package:myapp/repo/btn/btn_cubit.dart';
-import 'package:myapp/repo/login/repo_login.dart';
+import 'package:myapp/repo/login/login_cubit.dart';
 import 'package:myapp/widget/buton.dart';
 import 'package:myapp/widget/textfild.dart';
 
 // ignore: must_be_immutable
 class LoginScreen extends StatefulWidget {
-  LoginScreen({super.key});
+  BuildContext context;
+  LoginScreen({super.key, required this.context});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -41,18 +43,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void girisYap(context) {
     Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => const HomeScreen(),
+      builder: (context) => HomeScreen(context: context),
     ));
   }
 
   void misafirGirisi() {
-    debugPrint('Misafir Gİriş');
-    try {
-      LoginRepo().misafirGiris();
-      setState(() {});
-    } catch (e) {
-      debugPrint(e.toString());
-    }
+    context.read<LoginCubit>().kullaniciOlustir();
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => const LandingScreen(),
+    ));
   }
 
   void googleGirisi() {}

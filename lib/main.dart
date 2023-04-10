@@ -2,6 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:myapp/repo/btn/btn_cubit.dart';
+import 'package:myapp/repo/login/cikis_cubit.dart';
+import 'package:myapp/repo/login/login_cubit.dart';
 import 'a_Sayfalar/landing.dart';
 
 Future<void> main() async {
@@ -18,6 +20,8 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => BtnTiklamaCubit()),
+        BlocProvider(create: (context) => LoginCubit()),
+        BlocProvider(create: (context) => CikisCubit()),
       ],
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,

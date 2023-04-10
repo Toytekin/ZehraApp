@@ -7,5 +7,12 @@ class LoginCubit extends Cubit<UserModel?> {
 
   var mRepo = LoginRepo();
 
-  kisiGetir() {}
+  cikisYap() async {
+    await mRepo.cikis();
+  }
+
+  kullaniciOlustir() async {
+    var kisi = await mRepo.misafirGiris();
+    emit(kisi);
+  }
 }

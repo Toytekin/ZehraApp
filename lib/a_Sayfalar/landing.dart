@@ -1,7 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:myapp/a_Sayfalar/home.dart';
 import 'package:myapp/a_Sayfalar/login.dart';
+import 'package:myapp/repo/login/cikis_cubit.dart';
 
 class LandingScreen extends StatefulWidget {
   const LandingScreen({super.key});
@@ -11,25 +12,27 @@ class LandingScreen extends StatefulWidget {
 }
 
 class _LandingScreenState extends State<LandingScreen> {
-  // ignore: prefer_typing_uninitialized_variables
-  var user;
-
   @override
   void initState() {
     super.initState();
-    checkUser();
+    context.read<CikisCubit>().kontrol();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (user == null) {
-      return LoginScreen();
-    } else {
-      return const HomeScreen();
-    }
-  }
-
-  Future<void> checkUser() async {
-    user = FirebaseAuth.instance.currentUser;
+    // ignore: unnecessary_null_comparison
+    return BlocConsumer<CikisCubit, bool>(
+      buildWhen: (previousState, state) {
+        // ignore: unnecessary_type_check
+        return state is! bool;
+      },
+      builder: (BuildContext context, state) {
+        return Text(state.toString());
+      },
+      listener: (BuildContext context, state) {
+        if (state == false) {
+        } else {}
+      },
+    );
   }
 }
