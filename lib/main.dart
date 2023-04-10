@@ -23,6 +23,7 @@ class MyApp extends StatelessWidget {
         ],
         child: AuthWidgetBuilder(
           onPageBuilder: (context, snapshot) => MaterialApp(
+            debugShowCheckedModeBanner: false,
             home: AuthWidget(snapshot: snapshot),
           ),
         ));

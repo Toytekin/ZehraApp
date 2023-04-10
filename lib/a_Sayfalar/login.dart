@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:myapp/a_Sayfalar/kaydol.dart';
 import 'package:provider/provider.dart';
 import '../repo/btn/btn_cubit.dart';
-import '../repo/login/repo_login.dart';
 import '../widget/buton.dart';
 import '../widget/textfild.dart';
+import 'package:page_transition/page_transition.dart';
 
 // ignore: must_be_immutable
 class LoginScreen extends StatefulWidget {
@@ -44,8 +45,9 @@ class _LoginScreenState extends State<LoginScreen> {
   void girisYap(context) {}
 
   Future<void> misafirGirisi() async {
-    await Provider.of<MyLoginServices>(context, listen: false)
-        .creatAnonimUser();
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => const KaydolScreen(),
+    ));
   }
 
   void googleGirisi() {}
@@ -75,13 +77,23 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 20),
             InkWell(
               onTap: () {
-                misafirGirisi();
+                Navigator.of(context).push(PageTransition(
+                    type: PageTransitionType.bottomToTop,
+                    child: const KaydolScreen()));
+                Provider.of<BtnTiklama>(context, listen: false)
+                    .tiklamaState2False();
               },
               child: SizedBox(
                 width: Get.width / 6,
                 height: Get.width / 6,
                 child: const Card(
-                  child: Icon(Icons.person_3_sharp, size: 50),
+                  color: Colors.black,
+                  child: Center(
+                      child: Text(
+                    'Kaydol',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.white),
+                  )),
                 ),
               ),
             ),
