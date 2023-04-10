@@ -1,13 +1,10 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:myapp/repo/btn/buton_tiklama_repo.dart';
+import 'package:flutter/material.dart';
 
-class BtnTiklamaCubit extends Cubit<bool> {
-  BtnTiklamaCubit() : super(false);
+class BtnTiklama extends ChangeNotifier {
+  bool tiklama = false;
 
-  var mRepo = BtnTiklamaRepo();
-
-  void tiklama() {
-    var deger = mRepo.tiklandi();
-    emit(deger);
+  tiklamaState() {
+    tiklama = !tiklama;
+    notifyListeners();
   }
 }

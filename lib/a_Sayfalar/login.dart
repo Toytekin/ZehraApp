@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/route_manager.dart';
+import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
-import 'package:myapp/a_Sayfalar/home.dart';
-import 'package:myapp/a_Sayfalar/landing.dart';
-import 'package:myapp/repo/btn/btn_cubit.dart';
-import 'package:myapp/repo/login/login_cubit.dart';
-import 'package:myapp/widget/buton.dart';
-import 'package:myapp/widget/textfild.dart';
+import 'package:provider/provider.dart';
+import '../repo/btn/btn_cubit.dart';
+import '../repo/login/repo_login.dart';
+import '../widget/buton.dart';
+import '../widget/textfild.dart';
 
 // ignore: must_be_immutable
 class LoginScreen extends StatefulWidget {
@@ -25,6 +23,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var btnProvider = Provider.of<BtnTiklama>(context, listen: false);
+
     return Scaffold(
       body: Center(
           child: Padding(
@@ -33,30 +33,24 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             SizedBox(height: Get.height * 0.08),
             lotti(),
-            textFildVeButons(context),
-            googleVeMisafirGirisButon(),
+            textFildVeButons(context, btnProvider),
+            googleVeMisafirGirisButon(context),
           ],
         ),
       )),
     );
   }
 
-  void girisYap(context) {
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => HomeScreen(context: context),
-    ));
-  }
+  void girisYap(context) {}
 
-  void misafirGirisi() {
-    context.read<LoginCubit>().kullaniciOlustir();
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => const LandingScreen(),
-    ));
+  Future<void> misafirGirisi() async {
+    await Provider.of<MyLoginServices>(context, listen: false)
+        .creatAnonimUser();
   }
 
   void googleGirisi() {}
 
-  Expanded googleVeMisafirGirisButon() {
+  Expanded googleVeMisafirGirisButon(BuildContext context) {
     return Expanded(
         child: Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -98,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
     ));
   }
 
-  Expanded textFildVeButons(BuildContext context) {
+  Expanded textFildVeButons(BuildContext context, BtnTiklama btnprovider) {
     return Expanded(
         flex: 2,
         child: Column(
@@ -120,19 +114,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     ))
               ],
             ),
-            girisButonu(context)
+            girisButonu(context, btnprovider)
           ],
         ));
   }
 
-  CustomButton1 girisButonu(BuildContext context) {
+  CustomButton1 girisButonu(BuildContext context, BtnTiklama btnTiklama) {
     return CustomButton1(
         butonColor: Colors.white,
         heigt: Get.width / 6,
         width: Get.width / 2,
         onTop: () {
-          context.read<BtnTiklamaCubit>().tiklama();
-          Future.delayed(const Duration(seconds: 1), () => girisYap(context));
+          btnTiklama.tiklamaState();
         },
         widget2: const Center(
             child: CircularProgressIndicator(

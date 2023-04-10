@@ -1,41 +1,36 @@
-import 'package:flutter/material.dart';
-import 'package:myapp/model/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:myapp/model/user_model.dart';
+import 'package:myapp/repo/login/base_auth.dart';
+import 'package:myapp/repo/login/mixin_user.dart';
 
-class LoginRepo {
-  FirebaseAuth firebase = FirebaseAuth.instance;
+class MyLoginServices with ConverUser implements BaseAuth {
+  var firebase = FirebaseAuth.instance;
+  UserModel? userModel;
 
-  Future<void> cikis() async {
-    await firebase.signOut();
+  //? ***********< CREATE >***********
+  @override
+  Future<UserModel?> creatAnonimUser() async {
+    var olusanKisi = await firebase.signInAnonymously();
+    userModel = userConvert(olusanKisi);
+
+    return userModel;
   }
+  //? ***********< OUTH >***********
 
-  Future<bool> usurKontrol() async {
-    // ignore: unrelated_type_equality_checks
-    if (firebase.currentUser == false) {
-      return false;
-    } else {
-      return true;
-    }
+  @override
+  Future<void> signOuth() {
+    return firebase.signOut();
   }
+  //? ***********< CHANCE >***********
 
-  Future<UserModel?> misafirGiris() async {
-    var kisi = await firebase.signInAnonymously();
+  @override
+  Stream<UserModel> get screeChance => firebase
+      .authStateChanges()
+      .map((event) => UserConvert().userConvert(event!));
+}
 
-    try {
-      debugPrint('oluştu');
-      return fireUserFromUserModel(kisi);
-    } catch (e) {
-      debugPrint('Hata: Mİsafir giris$e');
-      return null;
-    }
-  }
-
-  UserModel fireUserFromUserModel(UserCredential userCredential) {
-    var user = UserModel(
-        id: userCredential.user!.email == null
-            ? 'Deneme'
-            : userCredential.user!.email.toString(),
-        name: userCredential.user!.uid);
-    return user;
+class UserConvert {
+  UserModel userConvert(User user) {
+    return UserModel(id: user.uid, name: user.uid);
   }
 }

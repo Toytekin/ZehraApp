@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:myapp/a_Sayfalar/landing.dart';
-import 'package:myapp/repo/login/login_cubit.dart';
+import 'package:provider/provider.dart';
 
+import '../repo/login/repo_login.dart';
+
+// ignore: must_be_immutable
 class HomeScreen extends StatefulWidget {
   BuildContext context;
+
   HomeScreen({super.key, required this.context});
 
   @override
@@ -14,18 +16,14 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    var services = Provider.of<MyLoginServices>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Deneme'),
+        title: Text(services.userModel!.id),
         actions: [
           IconButton(
-              onPressed: () {
-                context.read<LoginCubit>().cikisYap();
-                Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(
-                      builder: (context) => const LandingScreen(),
-                    ),
-                    (route) => false);
+              onPressed: () async {
+                await services.signOuth();
               },
               icon: const Icon(Icons.exit_to_app))
         ],

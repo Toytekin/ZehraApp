@@ -1,10 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:myapp/repo/btn/btn_cubit.dart';
-import 'package:myapp/repo/login/cikis_cubit.dart';
-import 'package:myapp/repo/login/login_cubit.dart';
-import 'a_Sayfalar/landing.dart';
+import 'package:myapp/repo/login/auth_widgert.dart';
+import 'package:myapp/repo/login/auth_widget_builder.dart';
+import 'package:myapp/repo/login/repo_login.dart';
+import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,24 +14,20 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => BtnTiklamaCubit()),
-        BlocProvider(create: (context) => LoginCubit()),
-        BlocProvider(create: (context) => CikisCubit()),
-      ],
-      child: const MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Material App',
-        home: LandingScreen(),
-      ),
-    );
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (context) => BtnTiklama()),
+          Provider<MyLoginServices>(create: (context) => MyLoginServices()),
+        ],
+        child: AuthWidgetBuilder(
+          onPageBuilder: (context, snapshot) => MaterialApp(
+            home: AuthWidget(snapshot: snapshot),
+          ),
+        ));
   }
 }
-
 
 // web       1:735287171844:web:c0bbf40bab3b5f4dc70e51
 // android   1:735287171844:android:8dde0c1a824af925c70e51
