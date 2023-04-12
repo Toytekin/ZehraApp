@@ -13,7 +13,10 @@ class AuthWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     if (snapshot.connectionState == ConnectionState.active) {
       return snapshot.hasData
-          ? HomeScreen(context: context)
+          ? HomeScreen(
+              context: context,
+              userModel: snapshot.data,
+            )
           : LoginScreen(context: context);
     } else {
       return const ErrorPage();

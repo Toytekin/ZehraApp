@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/model/user_model.dart';
 import 'package:provider/provider.dart';
 
 import '../repo/login/repo_login.dart';
@@ -6,8 +7,9 @@ import '../repo/login/repo_login.dart';
 // ignore: must_be_immutable
 class HomeScreen extends StatefulWidget {
   BuildContext context;
+  UserModel? userModel;
 
-  HomeScreen({super.key, required this.context});
+  HomeScreen({super.key, required this.context, required this.userModel});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -19,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
     var services = Provider.of<MyLoginServices>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-        title: Text(services.userModel!.id),
+        title: Text(widget.userModel!.id),
         actions: [
           IconButton(
               onPressed: () async {
@@ -28,7 +30,14 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: const Icon(Icons.exit_to_app))
         ],
       ),
-      body: const Center(),
+      body: Center(
+        child: Card(
+          child: ListTile(
+            title: Text(widget.userModel!.id),
+            subtitle: Text(widget.userModel!.mail),
+          ),
+        ),
+      ),
     );
   }
 }

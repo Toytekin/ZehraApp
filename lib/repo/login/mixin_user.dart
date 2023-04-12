@@ -5,6 +5,7 @@ import '../../model/user_model.dart';
 mixin ConverUser {
   UserModel userConvert(UserCredential userCredential) {
     return UserModel(
-        id: userCredential.user!.uid, mail: userCredential.user!.uid);
+        id: userCredential.user!.uid,
+        mail: userCredential.user!.email.toString());
   }
 }

@@ -2,7 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:myapp/a_Sayfalar/kaydol.dart';
+import 'package:myapp/a_Sayfalar/sifremi_unuttum.dart';
+import 'package:myapp/model/user_model.dart';
+import 'package:myapp/repo/login/google_login.dart';
+import 'package:myapp/repo/login/repo_login.dart';
 import 'package:provider/provider.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import '../repo/btn/btn_cubit.dart';
 import '../widget/buton.dart';
 import '../widget/textfild.dart';
@@ -22,11 +28,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
   var sifreController = TextEditingController();
 
+  UserModel? _userModel;
+
   @override
   Widget build(BuildContext context) {
     var btnProvider = Provider.of<BtnTiklama>(context, listen: false);
+    var authProvider = Provider.of<MyLoginServices>(context, listen: false);
+    var googleProvider = Provider.of<GoogleLogin>(context, listen: false);
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Center(
           child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -34,8 +45,8 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             SizedBox(height: Get.height * 0.08),
             lotti(),
-            textFildVeButons(context, btnProvider),
-            googleVeMisafirGirisButon(context),
+            textFildVeButons(context, btnProvider, authProvider),
+            googleVeMisafirGirisButon(context, googleProvider),
           ],
         ),
       )),
@@ -50,9 +61,8 @@ class _LoginScreenState extends State<LoginScreen> {
     ));
   }
 
-  void googleGirisi() {}
-
-  Expanded googleVeMisafirGirisButon(BuildContext context) {
+  Expanded googleVeMisafirGirisButon(
+      BuildContext context, GoogleLogin googleProvider) {
     return Expanded(
         child: Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -61,8 +71,8 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             InkWell(
-              onTap: () {
-                googleGirisi();
+              onTap: () async {
+                await googleProvider.googleGiris();
               },
               child: SizedBox(
                 width: Get.width / 6,
@@ -104,7 +114,8 @@ class _LoginScreenState extends State<LoginScreen> {
     ));
   }
 
-  Expanded textFildVeButons(BuildContext context, BtnTiklama btnprovider) {
+  Expanded textFildVeButons(BuildContext context, BtnTiklama btnprovider,
+      MyLoginServices authProvider) {
     return Expanded(
         flex: 2,
         child: Column(
@@ -119,25 +130,38 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const SifremiUnuttumScreen(),
+                      ));
+                    },
                     child: const Text(
                       'Şifreni mi Unuttun ?',
                       style: TextStyle(color: Colors.black),
                     ))
               ],
             ),
-            girisButonu(context, btnprovider)
+            girisButonu(context, btnprovider, authProvider)
           ],
         ));
   }
 
-  CustomButton1 girisButonu(BuildContext context, BtnTiklama btnTiklama) {
+  CustomButton1 girisButonu(BuildContext context, BtnTiklama btnTiklama,
+      MyLoginServices autProvider) {
     return CustomButton1(
         butonColor: Colors.white,
         heigt: Get.width / 6,
         width: Get.width / 2,
-        onTop: () {
+        onTop: () async {
           btnTiklama.tiklamaState();
+          _userModel = await autProvider.signFirebasea(
+              pasword: sifreController.text, mail: mailController.text);
+          // User kontrol ediliyor varsa tamam yoksa snac bar geliyor
+          if (_userModel == null) {
+            btnTiklama.tiklamaState();
+            // ignore: use_build_context_synchronously
+            snacError(context);
+          } else {}
         },
         widget2: const Center(
             child: CircularProgressIndicator(
@@ -155,5 +179,17 @@ class _LoginScreenState extends State<LoginScreen> {
             fit: BoxFit.cover,
           ),
         ));
+  }
+
+  void snacError(BuildContext context) {
+    showTopSnackBar(
+      Overlay.of(context),
+      const CustomSnackBar.info(
+        backgroundColor: Colors.white,
+        maxLines: 6,
+        textStyle: TextStyle(color: Colors.black),
+        message: 'Kullanıcı adı veya şifresi hatalı !',
+      ),
+    );
   }
 }
