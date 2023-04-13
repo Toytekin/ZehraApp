@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "735287171844",
+    "project_id": "zehraapp-2cdcb",
+    "storage_bucket": "zehraapp-2cdcb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:735287171844:android:8dde0c1a824af925c70e51",
+        "android_client_info": {
+          "package_name": "com.example.myapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "735287171844-iurauvf1kn6bkemraoqopiu4isjn0480.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.myapp",
+            "certificate_hash": "78f018ab6d6013a4295a2d528d6fbea89400c89d"
+          }
+        },
+        {
+          "client_id": "735287171844-nh0ka93u9jqqmd7t3ka7gaos6mqm11s8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyJjNdSkhGDnuGLiHFXK3NQzyYjOjOM2c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "735287171844-nh0ka93u9jqqmd7t3ka7gaos6mqm11s8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "735287171844-fartadscm9rtgp3c93hn7qnk2too36ut.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.myapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

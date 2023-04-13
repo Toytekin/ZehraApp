@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:myapp/model/user_model.dart';
 import 'package:myapp/repo/login/repo_login.dart';
 import 'package:myapp/widget/buton1.dart';
 import 'package:myapp/widget/textfild.dart';
@@ -9,6 +10,7 @@ import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 import '../repo/btn/btn_cubit.dart';
+import '../repo/login/db_user.dart';
 
 // ignore: must_be_immutable
 class KaydolScreen extends StatefulWidget {
@@ -26,10 +28,12 @@ class _KaydolScreenState extends State<KaydolScreen> {
   var sifreTekrariController = TextEditingController();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  String? errorMessage;
+  UserModel? _errorMessage;
 
   @override
   Widget build(BuildContext context) {
+    var dbUser = Provider.of<DbUser>(context, listen: false);
+
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.black,
@@ -63,7 +67,7 @@ class _KaydolScreenState extends State<KaydolScreen> {
                   heigt: Get.width / 6,
                   width: Get.width / 4,
                   onTop: () {
-                    butonKaydolTiklama();
+                    butonKaydolTiklama(dbUser);
                   },
                   widget1: const Center(
                       child: Text(
@@ -83,25 +87,26 @@ class _KaydolScreenState extends State<KaydolScreen> {
     );
   }
 
-  butonKaydolTiklama() async {
+  butonKaydolTiklama(DbUser dbUser) async {
     Provider.of<BtnTiklama>(context, listen: false).tiklamaState2();
     // ? TEXTFİLD KONTROLÜ
     if (sifreController.text == sifreTekrariController.text &&
         sifreController.text.isNotEmpty &&
         mailController.text.isNotEmpty) {
       //! FİREBASE  KONTROLÜ => O L U Ş  T U R M A
-      await kisiKontrolVeolustur();
+      await kisiKontrolVeolustur(dbUser);
       // KİŞİ OLUŞTURULUSA YANİ VERİ TABANINDA YOKSA
       // ERROR MESAJI null GELECEK.
       // VE NULL GELİRSE BAŞARILI GİRİŞ SNACBARI GELECCEK
-      if (errorMessage == null) {
+      if (_errorMessage == null) {
         // ignore: use_build_context_synchronously
-        snacBarSucces(context);
+        snacBarError(context);
       } else {
         // ignore: use_build_context_synchronously
-        snacBarError(context); // mail veri tabanında var uyarısı
+        snacBarSucces(context);
         // ignore: use_build_context_synchronously
         Provider.of<BtnTiklama>(context, listen: false).tiklamaState2();
+        await dbUser.saveUser(_errorMessage!);
       }
     } else {
       snacBar(context);
@@ -109,13 +114,14 @@ class _KaydolScreenState extends State<KaydolScreen> {
     }
   }
 
-  Future<void> kisiKontrolVeolustur() async {
-    String? errorMessage =
+  Future<void> kisiKontrolVeolustur(DbUser dbUser) async {
+    UserModel? errorMessage =
         await Provider.of<MyLoginServices>(context, listen: false)
             .userKontrolVeKayit(
                 pasword: sifreController.text, mail: mailController.text);
+
     setState(() {
-      errorMessage = errorMessage;
+      _errorMessage = errorMessage;
     });
   }
 

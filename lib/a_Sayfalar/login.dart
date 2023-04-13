@@ -4,6 +4,7 @@ import 'package:lottie/lottie.dart';
 import 'package:myapp/a_Sayfalar/kaydol.dart';
 import 'package:myapp/a_Sayfalar/sifremi_unuttum.dart';
 import 'package:myapp/model/user_model.dart';
+import 'package:myapp/repo/login/db_user.dart';
 import 'package:myapp/repo/login/google_login.dart';
 import 'package:myapp/repo/login/repo_login.dart';
 import 'package:provider/provider.dart';
@@ -35,6 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
     var btnProvider = Provider.of<BtnTiklama>(context, listen: false);
     var authProvider = Provider.of<MyLoginServices>(context, listen: false);
     var googleProvider = Provider.of<GoogleLogin>(context, listen: false);
+    var dbUser = Provider.of<DbUser>(context, listen: false);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -45,8 +47,8 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             SizedBox(height: Get.height * 0.08),
             lotti(),
-            textFildVeButons(context, btnProvider, authProvider),
-            googleVeMisafirGirisButon(context, googleProvider),
+            textFildVeButons(context, btnProvider, authProvider, dbUser),
+            googleVeMisafirGirisButon(context, googleProvider, dbUser),
           ],
         ),
       )),
@@ -62,7 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Expanded googleVeMisafirGirisButon(
-      BuildContext context, GoogleLogin googleProvider) {
+      BuildContext context, GoogleLogin googleProvider, DbUser dbUser) {
     return Expanded(
         child: Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -72,7 +74,12 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             InkWell(
               onTap: () async {
-                await googleProvider.googleGiris();
+                UserModel? user = await googleProvider.googleGiris();
+                // ignore: unrelated_type_equality_checks
+                if (user != null) {
+                  bool deger = await dbUser.saveUser(user);
+                  debugPrint(deger.toString());
+                }
               },
               child: SizedBox(
                 width: Get.width / 6,
@@ -115,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Expanded textFildVeButons(BuildContext context, BtnTiklama btnprovider,
-      MyLoginServices authProvider) {
+      MyLoginServices authProvider, DbUser dbUser) {
     return Expanded(
         flex: 2,
         child: Column(
@@ -141,13 +148,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     ))
               ],
             ),
-            girisButonu(context, btnprovider, authProvider)
+            girisButonu(context, btnprovider, authProvider, dbUser)
           ],
         ));
   }
 
   CustomButton1 girisButonu(BuildContext context, BtnTiklama btnTiklama,
-      MyLoginServices autProvider) {
+      MyLoginServices autProvider, DbUser dbUser) {
     return CustomButton1(
         butonColor: Colors.white,
         heigt: Get.width / 6,
@@ -159,9 +166,12 @@ class _LoginScreenState extends State<LoginScreen> {
           // User kontrol ediliyor varsa tamam yoksa snac bar geliyor
           if (_userModel == null) {
             btnTiklama.tiklamaState();
+
             // ignore: use_build_context_synchronously
             snacError(context);
-          } else {}
+          } else {
+            await dbUser.saveUser(_userModel!);
+          }
         },
         widget2: const Center(
             child: CircularProgressIndicator(

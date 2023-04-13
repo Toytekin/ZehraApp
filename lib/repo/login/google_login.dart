@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:myapp/model/user_model.dart';
-
 import 'package:google_sign_in/google_sign_in.dart';
 
 class GoogleLogin {
@@ -18,7 +17,7 @@ class GoogleLogin {
                 idToken: googleAuthh.idToken,
                 accessToken: googleAuthh.accessToken));
         User? user = sonuc.user;
-        var usermodel = userConvert(user!);
+        UserModel usermodel = userConvert(user!);
         return usermodel;
       }
     }

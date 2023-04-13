@@ -17,7 +17,10 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -46,16 +49,6 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCg8zDDPQ_MRmxKyLOUMGUQL3n4xCWweWo',
-    appId: '1:735287171844:web:c0bbf40bab3b5f4dc70e51',
-    messagingSenderId: '735287171844',
-    projectId: 'zehraapp-2cdcb',
-    authDomain: 'zehraapp-2cdcb.firebaseapp.com',
-    storageBucket: 'zehraapp-2cdcb.appspot.com',
-    measurementId: 'G-BR71JR1HWK',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDyJjNdSkhGDnuGLiHFXK3NQzyYjOjOM2c',
     appId: '1:735287171844:android:8dde0c1a824af925c70e51',
@@ -70,6 +63,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '735287171844',
     projectId: 'zehraapp-2cdcb',
     storageBucket: 'zehraapp-2cdcb.appspot.com',
+    androidClientId: '735287171844-iurauvf1kn6bkemraoqopiu4isjn0480.apps.googleusercontent.com',
     iosClientId: '735287171844-fartadscm9rtgp3c93hn7qnk2too36ut.apps.googleusercontent.com',
     iosBundleId: 'com.example.myapp',
   );

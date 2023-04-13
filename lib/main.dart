@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:myapp/repo/btn/btn_cubit.dart';
 import 'package:myapp/repo/login/auth_widgert.dart';
 import 'package:myapp/repo/login/auth_widget_builder.dart';
+import 'package:myapp/repo/login/db_user.dart';
 import 'package:myapp/repo/login/google_login.dart';
 import 'package:myapp/repo/login/repo_login.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (context) => BtnTiklama()),
           Provider<MyLoginServices>(create: (context) => MyLoginServices()),
           Provider<GoogleLogin>(create: (context) => GoogleLogin()),
+          Provider<DbUser>(create: (context) => DbUser()),
         ],
         child: AuthWidgetBuilder(
           onPageBuilder: (context, snapshot) => MaterialApp(

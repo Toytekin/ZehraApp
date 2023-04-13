@@ -50,13 +50,13 @@ class MyLoginServices with ConverUser implements BaseAuth {
     }
   }
 
-  Future<String?> userKontrolVeKayit(
+  Future<UserModel?> userKontrolVeKayit(
       {required String pasword, required String mail}) async {
     try {
       var olusanKisi = await firebase.createUserWithEmailAndPassword(
           email: mail, password: pasword);
       userModel = userConvert(olusanKisi);
-      return null;
+      return userModel;
     } on FirebaseAuthException catch (k) {
       debugPrint('User zaten var  :$k');
       return null;
